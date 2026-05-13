@@ -1,159 +1,281 @@
-/* FUENTES */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500&display=swap');
+/* ================================
+   PALETA PREMIUM (como asi.png)
+================================ */
+:root {
+    /* Amarillo real del diseño */
+    --primary-gold: #E8C84A;
+    --primary-gold-hover: #F0D35A;
+    --primary-gold-dark: #C9A826;
 
-/* RESET */
+    /* Fondos */
+    --bg-dark: #050505;
+    --bg-secondary: #0B0B0B;
+    --card-dark: #111111;
+
+    /* Textos */
+    --text-light: #F5F5F5;
+    --text-muted: #9A9A9A;
+
+    /* Bordes */
+    --border-soft: rgba(232, 200, 74, 0.12);
+
+    /* Glow */
+    --gold-shadow: rgba(232, 200, 74, 0.18);
+}
+
+/* ================================
+   RESET GENERAL
+================================ */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* BODY */
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #ffffff;
-  color: #111111;
-  line-height: 1.7;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-light);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* HEADER */
-header {
-  background-color: #ffffff;
-  padding: 25px;
-  border-bottom: 1px solid #e5e5e5;
-  text-align: center;
+/* ================================
+   TIPOGRAFÍA
+================================ */
+h1,
+h2,
+h3,
+.navbar-brand {
+    font-family: 'Playfair Display', serif;
 }
 
-header h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
-  letter-spacing: 1px;
+.section-title {
+    color: var(--primary-gold);
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
 }
 
-/* NAV */
-nav ul {
-  list-style: none;
-  margin-top: 10px;
+.section-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -12px;
+    width: 60%;
+    height: 2px;
+    background: var(--primary-gold);
 }
 
-nav ul li {
-  display: inline-block;
-  margin: 0 15px;
+/* ================================
+   NAVBAR
+================================ */
+.navbar {
+    background: rgba(5, 5, 5, 0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-soft);
+    padding: 18px 0;
 }
 
-nav a {
-  text-decoration: none;
-  color: #333;
-  font-size: 14px;
-  transition: 0.3s;
+.navbar-brand {
+    color: var(--primary-gold) !important;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
-nav a:hover {
-  color: #000;
+.nav-link {
+    color: var(--text-light) !important;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    margin-left: 15px;
 }
 
-/* SECCIONES */
-.seccion {
-  max-width: 900px;
-  margin: auto;
-  padding: 70px 20px;
+.nav-link:hover {
+    color: var(--primary-gold) !important;
 }
 
-/* INICIO */
-.perfil-container {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  flex-wrap: wrap;
+/* ================================
+   HERO SECTION
+================================ */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 100px;
+    background: radial-gradient(
+        circle at top right,
+        rgba(232, 200, 74, 0.08),
+        transparent 30%
+    );
 }
 
-.foto-perfil {
-  width: 160px;
-  border-radius: 50%;
-  border: 1px solid #ccc;
+.hero-section h1 {
+    font-size: 5rem;
+    line-height: 1.05;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: var(--text-light);
 }
 
-.info-inicio h2 {
-  font-family: 'Playfair Display', serif;
-  margin-bottom: 10px;
+.hero-section h1 span {
+    color: var(--primary-gold);
+    font-style: italic;
+    text-shadow: 0 0 18px var(--gold-shadow);
 }
 
-/* PORTAFOLIO */
-.galeria {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+.hero-section p {
+    color: var(--text-muted);
+    max-width: 600px;
+    font-size: 1.05rem;
 }
 
-.proyecto {
-  background-color: #ffffff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  padding: 15px;
-  flex: 1 1 250px;
-  transition: 0.3s;
+/* ================================
+   FOTO PERFIL
+================================ */
+.profile-img {
+    border: 4px solid var(--primary-gold);
+    max-width: 320px;
+    border-radius: 25px;
+    box-shadow:
+        0 0 30px var(--gold-shadow),
+        0 0 80px rgba(232, 200, 74, 0.06);
+    transition: transform 0.4s ease;
 }
 
-.proyecto:hover {
-  transform: translateY(-4px);
+.profile-img:hover {
+    transform: scale(1.02);
 }
 
-.proyecto img {
-  width: 100%;
-  border-radius: 6px;
+/* ================================
+   BOTONES
+================================ */
+.btn-primary,
+.btn-custom-action {
+    background: var(--primary-gold) !important;
+    color: #000 !important;
+    border: none;
+    padding: 14px 34px;
+    border-radius: 60px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(232, 200, 74, 0.15);
 }
 
-/* TITULOS */
-h2, h3 {
-  font-family: 'Playfair Display', serif;
-  margin-bottom: 15px;
+.btn-primary:hover,
+.btn-custom-action:hover {
+    background: var(--primary-gold-hover) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(232, 200, 74, 0.22);
 }
 
-/* HABILIDADES */
-.lista-habilidades {
-  list-style: none;
-  margin-top: 10px;
+/* ================================
+   PORTAFOLIO
+================================ */
+#portafolio {
+    background: var(--bg-secondary) !important;
 }
 
-.lista-habilidades li {
-  margin-bottom: 8px;
-  color: #333;
+.project-card {
+    background: var(--card-dark) !important;
+    color: var(--text-light);
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.35s ease;
 }
 
-/* CONTACTO */
-.contacto-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+.project-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-gold) !important;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.45);
 }
 
-.botones-contacto {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.project-card .card-title {
+    color: var(--primary-gold);
+    font-weight: 600;
 }
 
-/* BOTONES */
-.btn {
-  padding: 10px 18px;
-  border-radius: 20px;
-  text-decoration: none;
-  border: 1px solid #111;
-  color: #111;
-  font-size: 14px;
-  transition: 0.3s;
+.project-card p {
+    color: var(--text-muted);
 }
 
-.btn:hover {
-  background-color: #111;
-  color: #fff;
+/* ================================
+   SKILLS
+================================ */
+.skills-box {
+    background: var(--card-dark) !important;
+    border-left: 4px solid var(--primary-gold);
+    padding: 30px;
+    border-radius: 20px;
 }
 
-/* FOOTER */
-footer {
-  text-align: center;
-  padding: 20px;
-  border-top: 1px solid #e5e5e5;
-  font-size: 13px;
-  color: #666;
+.bg-soft-pink {
+    background: rgba(232, 200, 74, 0.08);
+    color: var(--primary-gold);
+    border: 1px solid rgba(232, 200, 74, 0.3);
+    margin: 6px;
+    padding: 10px 18px;
+    border-radius: 50px;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.bg-soft-pink:hover {
+    background: var(--primary-gold);
+    color: #000;
+}
+
+/* ================================
+   CONTACTO / FOOTER
+================================ */
+#contacto {
+    background: #080808 !important;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 90px;
+    padding-bottom: 50px;
+}
+
+#contacto h2 {
+    color: var(--primary-gold);
+    font-weight: 700;
+}
+
+#contacto p {
+    color: var(--text-muted);
+}
+
+#contacto .btn-light {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.14);
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+#contacto .btn-light:hover {
+    border-color: var(--primary-gold);
+    color: var(--primary-gold);
+}
+
+/* ================================
+   SCROLLBAR
+================================ */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0A0A0A;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-gold);
+    border-radius: 20px;
 }

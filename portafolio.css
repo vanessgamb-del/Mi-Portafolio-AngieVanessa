@@ -1,6 +1,4 @@
-/* ================================
-   VARIABLES & PALETA
-================================ */
+
 :root {
     --gold: #E8C84A;
     --gold-hover: #F0D35A;
@@ -539,8 +537,34 @@ h1, h2, h3, h4, .navbar-brand {
 }
 
 /* ================================
-   SOBRE MÍ
+   SECCIÓN PROYECTOS — CANVAS 3D
 ================================ */
+.projects-section {
+    position: relative;
+    overflow: hidden;
+    padding: 100px 0 !important;
+    background: transparent;
+}
+
+#projects-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.projects-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* ================================
+   TARJETAS DE PROYECTO (actualizadas)
+================================ */
+
 .about-section {
     background: var(--bg);
     padding: 100px 0;

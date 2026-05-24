@@ -1,13 +1,11 @@
-/* ==============================================
-   portafolio.js — Angie Vanessa Gamboa Rivas
-   Efectos 3D: Three.js + Card Tilt + Cursor
-   ============================================= */
+
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("✨ Portafolio 3D de Angie Vanessa cargado.");
 
     initBackground3D();
     initFooterParticles();
+    initProjectsCanvas();
     initCursor();
     initNavbar();
     initNavLinks();
@@ -248,6 +246,249 @@ function initFooterParticles() {
     animate();
 }
 
+
+
+
+/* ============================================================
+   1C. FONDO 3D EN SECCIÓN PROYECTOS — PARTÍCULAS DE CÓDIGO
+       Símbolos de lenguajes flotan como constelaciones en el espacio
+   ============================================================ */
+function initProjectsCanvas() {
+    if (typeof THREE === 'undefined') return;
+
+    const canvas = document.getElementById('projects-canvas');
+    if (!canvas) return;
+
+    const section = canvas.parentElement;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 500);
+    camera.position.z = 12;
+
+    function resizeCanvas() {
+        const w = section.offsetWidth;
+        const h = section.offsetHeight;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // ---- Crear texturas de texto para cada tecnología ----
+    const techTokens = [
+        { text: '</>', color: '#E8C84A', scale: 1.2 },   // HTML — dorado
+        { text: 'JS',  color: '#F7DF1E', scale: 1.0 },   // JavaScript — amarillo
+        { text: '{}',  color: '#E8C84A', scale: 0.9 },   // JSON/JS blocks — dorado claro
+        { text: '☕',  color: '#C9844A', scale: 1.0 },   // Java — naranja cálido
+        { text: 'fn()',color: '#9BD4C8', scale: 0.85 },  // función genérica — aqua
+        { text: 'py',  color: '#4B8BBE', scale: 1.0 },   // Python — azul
+        { text: '=>',  color: '#E8C84A', scale: 0.9 },   // Arrow function JS
+        { text: '@',   color: '#C9844A', scale: 1.1 },   // Java annotations
+        { text: '///', color: '#7A7A7A', scale: 0.8 },   // comentario — gris
+        { text: '{ }', color: '#9BD4C8', scale: 0.75 },  // block
+        { text: '</>',  color: '#E8C84A', scale: 0.7 },  // HTML mini
+        { text: 'JS',   color: '#F7DF1E', scale: 0.65 }, // JS mini
+        { text: '☕',   color: '#C9844A', scale: 0.6 },  // Java mini
+    ];
+
+    function makeTextTexture(text, color, fontSize = 64) {
+        const size = 256;
+        const cv = document.createElement('canvas');
+        cv.width = size;
+        cv.height = size;
+        const ctx = cv.getContext('2d');
+
+        ctx.clearRect(0, 0, size, size);
+
+        // Fondo semitransparente muy sutil
+        ctx.fillStyle = 'rgba(0,0,0,0)';
+        ctx.fillRect(0, 0, size, size);
+
+        // Texto principal
+        ctx.font = `bold ${fontSize}px "Courier New", monospace`;
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.85;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 18;
+        ctx.fillText(text, size / 2, size / 2);
+
+        // Segundo pase para glow más intenso
+        ctx.globalAlpha = 0.3;
+        ctx.shadowBlur = 40;
+        ctx.fillText(text, size / 2, size / 2);
+
+        const texture = new THREE.CanvasTexture(cv);
+        return texture;
+    }
+
+    // ---- Crear sprites ----
+    const TOTAL = 65;
+    const sprites = [];
+
+    for (let i = 0; i < TOTAL; i++) {
+        const token = techTokens[i % techTokens.length];
+        const texture = makeTextTexture(token.text, token.color, 56 + Math.random() * 20);
+
+        const mat = new THREE.SpriteMaterial({
+            map: texture,
+            transparent: true,
+            opacity: 0.15 + Math.random() * 0.55,
+            depthWrite: false,
+        });
+
+        const sprite = new THREE.Sprite(mat);
+
+        // Posición aleatoria en un volumen amplio
+        const spread = 22;
+        sprite.position.set(
+            (Math.random() - 0.5) * spread,
+            (Math.random() - 0.5) * spread * 0.7,
+            (Math.random() - 0.5) * 14 - 2
+        );
+
+        const baseScale = token.scale * (0.55 + Math.random() * 0.7);
+        sprite.scale.set(baseScale, baseScale, 1);
+
+        // Datos de animación propios de cada sprite
+        sprite.userData = {
+            // Órbita propia — cada símbolo tiene su eje y velocidad
+            orbitRadius: 0.6 + Math.random() * 2.8,
+            orbitSpeed:  (0.08 + Math.random() * 0.18) * (Math.random() > 0.5 ? 1 : -1),
+            orbitPhase:  Math.random() * Math.PI * 2,
+            orbitAxis:   new THREE.Vector3(
+                Math.random() - 0.5,
+                Math.random() - 0.5,
+                Math.random() - 0.5
+            ).normalize(),
+            // Deriva lenta en Y (flotación)
+            driftY:      (Math.random() - 0.5) * 0.006,
+            driftPhase:  Math.random() * Math.PI * 2,
+            driftAmp:    0.3 + Math.random() * 1.2,
+            driftSpeed:  0.3 + Math.random() * 0.6,
+            // Pulso de opacidad
+            pulseSpeed:  0.4 + Math.random() * 1.0,
+            pulsePhase:  Math.random() * Math.PI * 2,
+            baseOpacity: mat.opacity,
+            // Posición original
+            originX: sprite.position.x,
+            originY: sprite.position.y,
+            originZ: sprite.position.z,
+        };
+
+        scene.add(sprite);
+        sprites.push(sprite);
+    }
+
+    // ---- Líneas de conexión entre sprites cercanos (efecto constelación) ----
+    const lineMat = new THREE.LineBasicMaterial({
+        color: 0xE8C84A,
+        transparent: true,
+        opacity: 0.04,
+    });
+
+    // Conectar los primeros 20 sprites en pares
+    const lineGroup = new THREE.Group();
+    for (let i = 0; i < 18; i += 2) {
+        const lineGeo = new THREE.BufferGeometry().setFromPoints([
+            sprites[i].position.clone(),
+            sprites[i + 1].position.clone(),
+        ]);
+        const line = new THREE.Line(lineGeo, lineMat.clone());
+        line.userData = { idxA: i, idxB: i + 1 };
+        lineGroup.add(line);
+    }
+    scene.add(lineGroup);
+
+    // ---- Partículas de polvo de fondo (muy sutiles) ----
+    const DUST = 120;
+    const dustPos = new Float32Array(DUST * 3);
+    for (let i = 0; i < DUST; i++) {
+        dustPos[i * 3]     = (Math.random() - 0.5) * 30;
+        dustPos[i * 3 + 1] = (Math.random() - 0.5) * 20;
+        dustPos[i * 3 + 2] = (Math.random() - 0.5) * 8 - 3;
+    }
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+    const dustMat = new THREE.PointsMaterial({
+        color: 0xE8C84A,
+        size: 0.025,
+        transparent: true,
+        opacity: 0.18,
+        sizeAttenuation: true,
+    });
+    const dust = new THREE.Points(dustGeo, dustMat);
+    scene.add(dust);
+
+    // ---- Mouse parallax suave ----
+    let mx = 0, my = 0, tx = 0, ty = 0;
+
+    document.addEventListener('mousemove', (e) => {
+        const rect = section.getBoundingClientRect();
+        if (e.clientY >= rect.top - 100 && e.clientY <= rect.bottom + 100) {
+            mx = ((e.clientX / window.innerWidth) - 0.5) * 2;
+            my = ((e.clientY / window.innerHeight) - 0.5) * 2;
+        }
+    });
+
+    // ---- Loop de animación ----
+    const clock = new THREE.Clock();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+
+        // Parallax de cámara suave (distinto al header)
+        tx += (mx * 0.5 - tx) * 0.03;
+        ty += (-my * 0.4 - ty) * 0.03;
+        camera.position.x = tx;
+        camera.position.y = ty;
+        camera.lookAt(scene.position);
+
+        // Rotar polvo de fondo lentamente en sentido opuesto al header
+        dust.rotation.y = -t * 0.025;
+        dust.rotation.x = t * 0.01;
+
+        // Animar cada sprite
+        sprites.forEach((sp) => {
+            const d = sp.userData;
+
+            // Órbita local en torno a su posición original
+            const angle = t * d.orbitSpeed + d.orbitPhase;
+            sp.position.x = d.originX + Math.cos(angle) * d.orbitRadius * 0.4;
+            sp.position.z = d.originZ + Math.sin(angle) * d.orbitRadius * 0.3;
+
+            // Flotación vertical sinusoidal
+            sp.position.y = d.originY
+                + Math.sin(t * d.driftSpeed + d.driftPhase) * d.driftAmp * 0.35;
+
+            // Pulso de opacidad — inhale/exhale
+            const pulse = 0.6 + 0.4 * Math.sin(t * d.pulseSpeed + d.pulsePhase);
+            sp.material.opacity = d.baseOpacity * pulse;
+        });
+
+        // Actualizar posiciones de líneas de constelación
+        lineGroup.children.forEach((line) => {
+            const { idxA, idxB } = line.userData;
+            const pts = [
+                sprites[idxA].position.clone(),
+                sprites[idxB].position.clone(),
+            ];
+            line.geometry.setFromPoints(pts);
+            line.geometry.computeBoundingSphere();
+        });
+
+        renderer.render(scene, camera);
+    }
+
+    animate();
+}
 
 
 ///////////////////////////////s
